@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dynamic Image Puzzle Game</title>
+
+  <!-- ✅ Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+
+  <!-- limk css file -->
+  <link href="./dist/output.css" rel="stylesheet">
+
+</head>
+<body class="bg-gray-900 text-white min-h-screen flex flex-col items-center p-4 space-y-4">
+
+  <h1 class="text-3xl font-bold mb-2">🧩 Image Puzzle Game</h1>
+
+  <div class="flex gap-4 flex-wrap justify-center">
+
+       <!-- Sample Image Selector -->
+    <div>
+      <label class="block mb-1">Choose Sample Image:</label>
+      <select id="sampleImages" class="bg-gray-800 p-2 rounded">
+        <option value="">-- Select --</option>
+        <option value="images/sample1.jpg">Nature</option>
+        <option value="images/sample2.jpg">Mountains</option>
+        <option value="images/sample3.jpg">Cityscape</option>
+      </select>
+    </div>
+
+    
+    <!-- Image Upload -->
+    <div>
+      <label class="block mb-1">Upload Image:</label>
+      <input type="file" id="imageUpload" accept="image/*" class="bg-gray-800 p-2 rounded" />
+    </div>
+
+     <!-- Difficulty -->
+    <div>
+      <label class="block mb-1">Select Difficulty:</label>
+      <select id="difficulty" class="bg-gray-800 p-2 rounded">
+        <option value="3">Easy</option>
+        <option value="4" selected>Medium</option>
+        <option value="5">Hard</option>
+      </select>
+    </div>
+
+      <!-- Start Button -->
+    <button id="startBtn" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded font-bold mt-6">Start Puzzle</button>
+  </div>
+
+  <!-- Stats -->
+  <div class="flex gap-6">
+    <p>🎯 Moves: <span id="moveCounter">0</span></p>
+    <p>⏱️ Time: <span id="timer">0</span> sec</p>
+  </div>
+
+   <!-- Puzzle Container -->
+  <div id="puzzleContainer" class="grid gap-1 mt-4"></div>
+
+  <!-- Success Message -->
+  <p id="successMsg" class="text-green-400 text-xl mt-4 hidden">🎉 Puzzle Solved!</p>
+
+  
+  <!-- ✅ Link to External JavaScript -->
+  <script src="script.js"></script>
+</body>
+</html>

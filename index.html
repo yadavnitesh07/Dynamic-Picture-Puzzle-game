@@ -17,7 +17,12 @@
 
   <h1 class="text-3xl font-bold mb-2">🧩 Image Puzzle Game</h1>
 
-  <div class="flex gap-4 flex-wrap justify-center">
+  <div class="flex gap-4 flex-wrap justify-center">  
+
+    <!-- Controls Section -->
+<div
+  class="w-full flex flex-wrap items-center justify-center gap-4 mt-6 text-white text-sm"
+>
 
        <!-- Sample Image Selector -->
     <div>
@@ -35,7 +40,14 @@
     <div>
       <label class="block mb-1">Upload Image:</label>
       <input type="file" id="imageUpload" accept="image/*" class="bg-gray-800 p-2 rounded" />
-    </div>
+    </div>  
+
+    <!-- Original Image Preview -->
+<div class="mt-2">
+  <label class="block mb-1">Preview:</label>
+  <img id="originalPreview" class="w-48 h-auto rounded border-2 border-white shadow-md" alt="Original Preview" />
+</div>
+
 
      <!-- Difficulty -->
     <div>
@@ -47,18 +59,31 @@
       </select>
     </div>
 
-      <!-- Start Button -->
-    <button id="startBtn" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded font-bold mt-6">Start Puzzle</button>
+     <!-- Start Button -->
+  <button
+    id="startBtn"
+    class="bg-blue-600 hover:bg-blue-700 px-5 py-2 rounded text-sm font-medium flex-shrink-0 w-32 text-center"
+  >
+    Start Puzzle
+  </button>
+</div>
+ 
+<div class="flex flex-col items-center">
+  <!-- Puzzle Container -->
+  <div id="puzzleContainer" class="mx-auto border-4 border-white rounded-lg shadow-lg"
+       style="max-width: 500px; aspect-ratio: 1 / 1;">
   </div>
 
-  <!-- Stats -->
-  <div class="flex gap-6">
-    <p>🎯 Moves: <span id="moveCounter">0</span></p>
-    <p>⏱️ Time: <span id="timer">0</span> sec</p>
+  <!-- Moves & Timer -->
+  <div class="flex justify-center gap-8 mt-4 mb-4 text-white font-semibold text-lg">
+    <div>Moves: <span id="moveCounter">0</span></div>
+    <div>Timer: <span id="timer">0</span></div>
   </div>
+</div> 
 
-   <!-- Puzzle Container -->
-  <div id="puzzleContainer" class="grid gap-1 mt-4"></div>
+
+
+
 
   <!-- Success Message -->
   <p id="successMsg" class="text-green-400 text-xl mt-4 hidden">🎉 Puzzle Solved!</p>

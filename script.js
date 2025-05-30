@@ -172,3 +172,33 @@ function checkIfSolved() {
     return tile.dataset.position === `${correctRow}-${correctCol}`;
   });
 }
+
+
+// ✅ Image Preview Setup
+const originalPreview = document.getElementById("originalPreview");
+
+// Preview for sample image
+sampleImages.addEventListener("change", function () {
+  const selected = this.value;
+  if (selected) {
+    originalPreview.src = selected;
+    originalPreview.classList.remove("hidden");
+  } else {
+    originalPreview.classList.add("hidden");
+  }
+});
+
+// Preview for uploaded image
+imageInput.addEventListener("change", function (event) {
+  const file = event.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = function (e) {
+      originalPreview.src = e.target.result;
+      originalPreview.classList.remove("hidden");
+    };
+    reader.readAsDataURL(file);
+  } else {
+    originalPreview.classList.add("hidden");
+  }
+});

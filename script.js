@@ -1,3 +1,22 @@
+
+function startGame() {
+  const nameInput = document.querySelector('input[type="text"]');
+  const playerName = nameInput.value.trim();
+
+  if (!playerName) {
+    alert("Please enter your name!");
+    return;
+  }
+
+  // Optionally display name somewhere
+  console.log("Player Name:", playerName);
+
+  document.getElementById("welcomeScreen").classList.add("hidden");
+  document.getElementById("gameScreen").classList.remove("hidden");
+}
+
+
+
 const puzzleContainer = document.getElementById("puzzleContainer");
 const moveCounter = document.getElementById("moveCounter");
 const timerDisplay = document.getElementById("timer");
@@ -13,17 +32,18 @@ let seconds = 0;
 let timer = null;
 
 // Sample Image Selection Logic
+// Only update preview when sample image is selected
 sampleImages.addEventListener("change", function () {
-  const selectedImage = this.value;
-  if (selectedImage) {
-    const img = new Image();
-    img.onload = function () {
-      const size = parseInt(difficultySelect.value);
-      createPuzzle(img, size);
-    };
-    img.src = selectedImage;
+  const selected = this.value;
+  if (selected) {
+    originalPreview.src = selected;
+    originalPreview.classList.remove("hidden");
+    imageInput.value = ""; // clear uploaded file input
+  } else {
+    originalPreview.classList.add("hidden");
   }
 });
+
 
 // Start button click: Upload image or use sample image
 startBtn.addEventListener("click", () => {
@@ -130,6 +150,7 @@ function shuffleArray(array) {
   }
 }
 
+// ✅ Restrict drag-and-drop to adjacent tiles only
 function enableDragAndDrop() {
   let dragged;
 
@@ -148,17 +169,30 @@ function enableDragAndDrop() {
         const draggedIndex = tiles.indexOf(dragged);
         const droppedIndex = tiles.indexOf(tile);
 
-        [tiles[draggedIndex], tiles[droppedIndex]] = [tiles[droppedIndex], tiles[draggedIndex]];
+        const size = parseInt(difficultySelect.value);
 
-        puzzleContainer.innerHTML = "";
-        tiles.forEach((t) => puzzleContainer.appendChild(t));
+        const draggedRow = Math.floor(draggedIndex / size);
+        const draggedCol = draggedIndex % size;
+        const droppedRow = Math.floor(droppedIndex / size);
+        const droppedCol = droppedIndex % size;
 
-        moveCount++;
-        moveCounter.textContent = moveCount;
+        const rowDiff = Math.abs(draggedRow - droppedRow);
+        const colDiff = Math.abs(draggedCol - droppedCol);
 
-        if (checkIfSolved()) {
-          clearInterval(timer);
-          successMsg.classList.remove("hidden");
+        // ✅ Allow only adjacent (top, bottom, left, right)
+        if ((rowDiff === 1 && colDiff === 0) || (rowDiff === 0 && colDiff === 1)) {
+          [tiles[draggedIndex], tiles[droppedIndex]] = [tiles[droppedIndex], tiles[draggedIndex]];
+
+          puzzleContainer.innerHTML = "";
+          tiles.forEach((t) => puzzleContainer.appendChild(t));
+
+          moveCount++;
+          moveCounter.textContent = moveCount;
+
+          if (checkIfSolved()) {
+            clearInterval(timer);
+            successMsg.classList.remove("hidden");
+          }
         }
       }
     });
@@ -196,6 +230,7 @@ imageInput.addEventListener("change", function (event) {
     reader.onload = function (e) {
       originalPreview.src = e.target.result;
       originalPreview.classList.remove("hidden");
+      sampleImages.value = ""; // clear sample image selection
     };
     reader.readAsDataURL(file);
   } else {

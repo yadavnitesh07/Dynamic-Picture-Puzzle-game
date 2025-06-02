@@ -153,8 +153,11 @@ function shuffleArray(array) {
 // ✅ Restrict drag-and-drop to adjacent tiles only
 function enableDragAndDrop() {
   let dragged;
+  let touchStartTile = null;
+  let touchCurrentTile = null;
 
   tiles.forEach((tile) => {
+    // Desktop drag events
     tile.addEventListener("dragstart", (e) => {
       dragged = tile;
     });
@@ -166,38 +169,70 @@ function enableDragAndDrop() {
     tile.addEventListener("drop", (e) => {
       e.preventDefault();
       if (dragged !== tile) {
-        const draggedIndex = tiles.indexOf(dragged);
-        const droppedIndex = tiles.indexOf(tile);
+        swapTiles(dragged, tile);
+      }
+    });
 
-        const size = parseInt(difficultySelect.value);
+    // Mobile touch events
+    tile.addEventListener("touchstart", (e) => {
+      touchStartTile = tile;
+      touchCurrentTile = tile;
+    });
 
-        const draggedRow = Math.floor(draggedIndex / size);
-        const draggedCol = draggedIndex % size;
-        const droppedRow = Math.floor(droppedIndex / size);
-        const droppedCol = droppedIndex % size;
+    tile.addEventListener("touchmove", (e) => {
+      e.preventDefault();
+      // Find tile currently under touch point
+      const touch = e.touches[0];
+      const elem = document.elementFromPoint(touch.clientX, touch.clientY);
 
-        const rowDiff = Math.abs(draggedRow - droppedRow);
-        const colDiff = Math.abs(draggedCol - droppedCol);
-
-        // ✅ Allow only adjacent (top, bottom, left, right)
-        if ((rowDiff === 1 && colDiff === 0) || (rowDiff === 0 && colDiff === 1)) {
-          [tiles[draggedIndex], tiles[droppedIndex]] = [tiles[droppedIndex], tiles[draggedIndex]];
-
-          puzzleContainer.innerHTML = "";
-          tiles.forEach((t) => puzzleContainer.appendChild(t));
-
-          moveCount++;
-          moveCounter.textContent = moveCount;
-
-          if (checkIfSolved()) {
-            clearInterval(timer);
-            successMsg.classList.remove("hidden");
-          }
+      if (elem) {
+        const tileElem = elem.closest("div[data-position]");
+        if (tileElem && tileElem !== touchCurrentTile) {
+          touchCurrentTile = tileElem;
         }
       }
     });
+
+    tile.addEventListener("touchend", (e) => {
+      if (touchStartTile && touchCurrentTile && touchStartTile !== touchCurrentTile) {
+        swapTiles(touchStartTile, touchCurrentTile);
+      }
+      touchStartTile = null;
+      touchCurrentTile = null;
+    });
   });
+
+  function swapTiles(tile1, tile2) {
+    const draggedIndex = tiles.indexOf(tile1);
+    const droppedIndex = tiles.indexOf(tile2);
+
+    const size = parseInt(difficultySelect.value);
+
+    const draggedRow = Math.floor(draggedIndex / size);
+    const draggedCol = draggedIndex % size;
+    const droppedRow = Math.floor(droppedIndex / size);
+    const droppedCol = droppedIndex % size;
+
+    const rowDiff = Math.abs(draggedRow - droppedRow);
+    const colDiff = Math.abs(draggedCol - droppedCol);
+
+    if ((rowDiff === 1 && colDiff === 0) || (rowDiff === 0 && colDiff === 1)) {
+      [tiles[draggedIndex], tiles[droppedIndex]] = [tiles[droppedIndex], tiles[draggedIndex]];
+
+      puzzleContainer.innerHTML = "";
+      tiles.forEach((t) => puzzleContainer.appendChild(t));
+
+      moveCount++;
+      moveCounter.textContent = moveCount;
+
+      if (checkIfSolved()) {
+        clearInterval(timer);
+        successMsg.classList.remove("hidden");
+      }
+    }
+  }
 }
+
 
 function checkIfSolved() {
   return tiles.every((tile, index) => {
